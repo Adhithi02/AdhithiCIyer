@@ -9,8 +9,8 @@ export default function Reference() {
         <hr className="ruled-line flex-1" />
       </div>
 
-      <div className="bracket-box p-0 overflow-hidden mb-6">
-        <table className="w-full text-left border-collapse">
+      <div className="bracket-box p-0 overflow-x-auto mb-6">
+        <table className="w-full text-left border-collapse min-w-[500px]">
           <thead>
             <tr className="border-b border-[var(--color-border-strong)] bg-[#0a0b0d]">
               <th className="mono-label text-[10px] px-5 py-4 w-[160px]">Domain</th>

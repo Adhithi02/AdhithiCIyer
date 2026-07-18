@@ -57,7 +57,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   line-height: 1.6;
-  overflow: hidden; /* We handle scrolling in the split layout */
+  overflow-x: hidden;
 }
 
 /* ─── HUD Scanline & Grid Effect ──────────────────────────────────── */

@@ -52,11 +52,18 @@ export default function DashboardHUD({ children }: { children: React.ReactNode }
 
   const scrollTo = (id: string) => {
     setActiveSection(id);
-    const viewer = document.getElementById("viewer");
     const target = document.getElementById(id);
-    if (viewer && target) {
-      const offset = target.offsetTop - viewer.offsetTop;
-      viewer.scrollTo({ top: offset, behavior: "smooth" });
+    if (target) {
+      if (window.innerWidth >= 1024) {
+        const viewer = document.getElementById("viewer");
+        if (viewer) {
+          const offset = target.offsetTop - viewer.offsetTop;
+          viewer.scrollTo({ top: offset, behavior: "smooth" });
+        }
+      } else {
+        const offset = target.getBoundingClientRect().top + window.scrollY - 32;
+        window.scrollTo({ top: offset, behavior: "smooth" });
+      }
     }
   };
 
