@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Adhithi C Iyer — Building Intelligent Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --surface: #111214;
+      --surface-2: #181a1d;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --ink: #f5f5f5;
+      --muted: #a1a1aa;
+      --muted-2: #70727c;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.16);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+      --sans: "Inter", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+      --max: 1160px;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(79, 140, 255, 0.08), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.03), transparent 18%),
+        linear-gradient(180deg, #0b0b0c 0%, #09090a 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      scroll-snap-type: y proximity;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: 0.32;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 84%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 50%, rgba(79, 140, 255, 0.04), transparent 38%);
+      opacity: 0.8;
+    }
+
+    ::selection {
+      background: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: 0; background: none; color: inherit; padding: 0; cursor: pointer; }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 16px;
+      z-index: 999;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+    }
+
+    .skip-link:focus { left: 16px; }
+
+    .shell {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .stage {
+      min-height: 100vh;
+      padding: 88px 0;
+      display: grid;
+      align-items: center;
+      scroll-snap-align: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .title {
+      margin: 12px 0 0;
+      font-size: clamp(42px, 6.8vw, 86px);
+      line-height: 0.96;
+      letter-spacing: -0.07em;
+      font-weight: 800;
+      max-width: 11ch;
+    }
+
+    .title .accent { color: var(--accent); }
+
+    .lede {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.45vw, 19px);
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pill strong { color: var(--ink); font-weight: 600; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--ink);
+      font-weight: 600;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(79, 140, 255, 0.32);
+      background: rgba(79, 140, 255, 0.08);
+    }
+
+    .button.primary {
+      background: linear-gradient(180deg, rgba(79, 140, 255, 0.22), rgba(79, 140, 255, 0.11));
+      border-color: rgba(79, 140, 255, 0.32);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 960px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .machine {
+      padding: 24px;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .machine-shell {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      border-radius: calc(var(--radius-xl) - 4px);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+        radial-gradient(circle at 20% 20%, rgba(79, 140, 255, 0.08), transparent 20%);
+      border: 1px solid var(--line);
+    }
+
+    .machine-shell::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+
+    .flow {
+      display: grid;
+      gap: 12px;
+    }
+
+    .flow-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .flow-step:hover,
+    .flow-step.active {
+      transform: translateY(-1px);
+      border-color: rgba(79, 140, 255, 0.3);
+      background: rgba(79, 140, 255, 0.05);
+    }
+
+    .flow-step .num {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .flow-step h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .flow-step p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .mini-note {
+      color: var(--muted-2);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .rail {
+      display: grid;
+      gap: 16px;
+    }
+
+    .rail-card {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .rail-card h4 {
+      margin: 0 0 8px;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .rail-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .node-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .node {
+      padding: 18px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      text-align: left;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .node:hover,
+    .node.active {
+      border-color: rgba(79, 140, 255, 0.28);
+      background: rgba(79, 140, 255, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .node .k {
+      display: block;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .node .v {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .node-detail {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--muted);
+      min-height: 150px;
+    }
+
+    .node-detail strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .mind-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .mind-layout { grid-template-columns: 1fr; }
+      .node-board { grid-template-columns: 1fr; }
+    }
+
+    .machine-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      margin-top: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .machine-layout { grid-template-columns: 1fr; }
+    }
+
+    .module-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .module-btn {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      text-align: left;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .module-btn:hover,
+    .module-btn.active {
+      border-color: rgba(79, 140, 255, 0.28);
+      background: rgba(79, 140, 255, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .module-btn .name {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .module-btn .desc {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .diagram {
+      padding: 22px;
+      min-height: 420px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .pipeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pipe-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pipe-label {
+      font-family: var(--mono);
+      color: var(--muted-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .pipe-bar {
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .pipe-bar span {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(79, 140, 255, 0.16), rgba(79, 140, 255, 0.85));
+      transform-origin: left;
+      transform: scaleX(var(--fill, 0.2));
+      transition: transform 250ms ease;
+    }
+
+    .case-panel {
+      margin-top: 10px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .case-panel h4 {
+      margin: 0 0 10px;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .case-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      margin-top: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .proof-grid { grid-template-columns: 1fr; }
+    }
+
+    .timeline {
+      padding: 24px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .year {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .timeline-copy h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .timeline-copy p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .evidence-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .evidence-card {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      min-height: 118px;
+    }
+
+    .evidence-card .k {
+      color: var(--muted-2);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+
+    .evidence-card .v {
+      margin-top: 10px;
+      font-size: 20px;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+
+    .evidence-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .connect-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.85fr;
+      gap: 18px;
+      margin-top: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .connect-layout { grid-template-columns: 1fr; }
+    }
+
+    .connect-links {
+      display: grid;
+      gap: 12px;
+    }
+
+    .connect-link {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .connect-link:hover {
+      border-color: rgba(79, 140, 255, 0.28);
+      background: rgba(79, 140, 255, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .connect-link .meta {
+      display: grid;
+      gap: 4px;
+    }
+
+    .connect-link .meta span:first-child {
+      color: var(--muted-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .connect-link .meta span:last-child {
+      color: var(--ink);
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .closing {
+      padding: 24px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .closing h3 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+
+    .closing h3 em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .closing p {
+      margin: 14px 0 0;
+      color: var(--muted);
+    }
+
+    .terminal {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #08090a;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .terminal-line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      margin: 0 0 8px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 18px 0 40px;
+      color: var(--muted-2);
+      font-size: 13px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(var(--max), calc(100% - 24px)); }
+      .stage { padding: 70px 0; }
+      .title { font-size: clamp(38px, 15vw, 56px); }
+      .machine, .timeline, .closing { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main">
+    <section class="stage" id="home">
+      <div class="shell">
+        <span class="eyebrow">Inside the Machine</span>
+        <h1 class="title">Building intelligent systems.</h1>
+        <p class="lede">
+          I design and ship software across research, backend, and systems work. The portfolio is organized as a lifecycle, not a resume: <strong>Mind</strong>, <strong>Engine</strong>, <strong>Proof</strong>, and <strong>Connect</strong>.
+        </p>
+        <div class="tags" style="margin-top: 22px;">
+          <span class="pill"><strong>Systems Thinking</strong> How I work</span>
+          <span class="pill"><strong>Research to Deployment</strong> What I build</span>
+          <span class="pill"><strong>Monochrome</strong> Minimal visual language</span>
+        </div>
+        <div class="grid-2">
+          <div class="panel machine">
+            <div>
+              <div class="mini-note">Lifecycle</div>
+              <div class="flow" style="margin-top: 16px;">
+                <div class="flow-step" data-step="mind">
+                  <div class="num">01</div>
+                  <div>
+                    <h3>Mind</h3>
+                    <p>How I think: research, backend, systems, and product direction.</p>
+                  </div>
+                </div>
+                <div class="flow-step" data-step="engine">
+                  <div class="num">02</div>
+                  <div>
+                    <h3>Engine</h3>
+                    <p>How I build: projects as modules with pipelines, architecture, and results.</p>
+                  </div>
+                </div>
+                <div class="flow-step" data-step="proof">
+                  <div class="num">03</div>
+                  <div>
+                    <h3>Proof</h3>
+                    <p>How I validate: publications, awards, metrics, and tangible evidence.</p>
+                  </div>
+                </div>
+                <div class="flow-step" data-step="connect">
+                  <div class="num">04</div>
+                  <div>
+                    <h3>Connect</h3>
+                    <p>How to reach me: email, GitHub, LinkedIn, and resume.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rail-card">
+              <h4>Focus</h4>
+              <ul>
+                <li>AI / ML systems</li>
+                <li>Backend and deployment</li>
+                <li>Linux and concurrency</li>
+                <li>Research translation</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel machine-shell">
+            <div class="mini-note">Machine state</div>
+            <div class="terminal" style="margin-top: 14px;">
+              <div class="terminal-line"><strong>&gt;</strong><span>whoami</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>AI/ML Engineer</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Backend Engineer</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Researcher</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Systems Builder</span></div>
+            </div>
+            <div class="rail" style="margin-top: 18px;">
+              <div class="rail-card">
+                <h4>Signal</h4>
+                <ul>
+                  <li>Published work in IEEE Access and ICSE</li>
+                  <li>Projects spanning multimodal AI, speech, and embedded systems</li>
+                  <li>Preference for architecture-first, production-minded work</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage" id="mind">
+      <div class="shell">
+        <span class="eyebrow">01 Mind</span>
+        <h2 class="title" style="max-width: 10ch;">How I think.</h2>
+        <p class="lede">This replaces About. The diagram below is the explanation: I connect research, backend systems, and infrastructure into one working system.</p>
+
+        <div class="mind-layout">
+          <div class="panel" style="padding: 24px;">
+            <div class="mini-note">Hover a node</div>
+            <div class="node-board">
+              <button class="node active" type="button" data-node="ai">
+                <span class="k">AI</span>
+                <span class="v">Modeling, agents, multimodal pipelines</span>
+              </button>
+              <button class="node" type="button" data-node="backend">
+                <span class="k">Backend</span>
+                <span class="v">APIs, services, orchestration, deployment</span>
+              </button>
+              <button class="node" type="button" data-node="systems">
+                <span class="k">Systems</span>
+                <span class="v">Linux, concurrency, performance, reliability</span>
+              </button>
+              <button class="node" type="button" data-node="research">
+                <span class="k">Research</span>
+                <span class="v">Papers, experiments, evaluation, impact</span>
+              </button>
+              <button class="node" type="button" data-node="products">
+                <span class="k">Products</span>
+                <span class="v">User-facing systems and shipped features</span>
+              </button>
+              <button class="node" type="button" data-node="infra">
+                <span class="k">Infrastructure</span>
+                <span class="v">Tooling, pipelines, observability, delivery</span>
+              </button>
+            </div>
+            <div class="node-detail" id="nodeDetail">
+              <strong>AI</strong>
+              I build model-backed systems, but the emphasis is always on whether the model can survive contact with data, users, and deployment constraints.
+            </div>
+          </div>
+
+          <div class="panel" style="padding: 24px;">
+            <div class="mini-note">System map</div>
+            <div class="rail-card" style="margin-top: 14px;">
+              <h4>Research Graph</h4>
+              <ul>
+                <li>AI → GreenAI → responsible model optimization</li>
+                <li>Computer Vision → injury risk prediction</li>
+                <li>Speech → multilingual translation pipelines</li>
+                <li>Systems → Linux IPC and scheduling</li>
+              </ul>
+            </div>
+            <div class="rail-card" style="margin-top: 12px;">
+              <h4>Working principle</h4>
+              <ul>
+                <li>Start with the system boundary.</li>
+                <li>Make the architecture legible.</li>
+                <li>Measure what matters.</li>
+                <li>Prefer durable engineering over decorative complexity.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage" id="engine">
+      <div class="shell">
+        <span class="eyebrow">02 Engine</span>
+        <h2 class="title" style="max-width: 10ch;">How I build.</h2>
+        <p class="lede">Projects are treated as modules in a machine. Clicking one shows the pipeline behind it, so every project reads like an engineering diagram instead of a card.</p>
+
+        <div class="machine-layout">
+          <div class="module-list">
+            <button class="module-btn active" type="button" data-project="greenai">
+              <span class="name">GreenAI</span>
+              <span class="desc">Reducing the environmental cost of deep learning.</span>
+            </button>
+            <button class="module-btn" type="button" data-project="cue">
+              <span class="name">CueStream</span>
+              <span class="desc">Multimodal affect recognition with backend delivery.</span>
+            </button>
+            <button class="module-btn" type="button" data-project="translate">
+              <span class="name">Translate.io</span>
+              <span class="desc">Offline speech translation across six Indian languages.</span>
+            </button>
+            <button class="module-btn" type="button" data-project="scheduler">
+              <span class="name">Linux Scheduler</span>
+              <span class="desc">Concurrent scheduling with System V IPC and pthreads.</span>
+            </button>
+          </div>
+
+          <div class="panel diagram">
+            <div class="mini-note" id="projectLabel">GreenAI</div>
+            <div class="case-panel" id="projectSummary">
+              <h4>Pipeline</h4>
+              <p>Dataset profiling → compression search → metric tracking → carbon analysis → deployment-minded evaluation.</p>
+            </div>
+            <div class="pipeline" id="pipelineBars" aria-label="Project pipeline">
+              <div class="pipe-row"><div class="pipe-label">Input</div><div class="pipe-bar"><span style="--fill:0.95"></span></div></div>
+              <div class="pipe-row"><div class="pipe-label">Processing</div><div class="pipe-bar"><span style="--fill:0.75"></span></div></div>
+              <div class="pipe-row"><div class="pipe-label">Optimization</div><div class="pipe-bar"><span style="--fill:0.8"></span></div></div>
+              <div class="pipe-row"><div class="pipe-label">Evaluation</div><div class="pipe-bar"><span style="--fill:0.72"></span></div></div>
+              <div class="pipe-row"><div class="pipe-label">Deploy</div><div class="pipe-bar"><span style="--fill:0.68"></span></div></div>
+            </div>
+            <div class="tags" id="projectTags">
+              <span class="tag">PyTorch</span>
+              <span class="tag">CodeCarbon</span>
+              <span class="tag">React</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage" id="proof">
+      <div class="shell">
+        <span class="eyebrow">03 Proof</span>
+        <h2 class="title" style="max-width: 10ch;">What holds up.</h2>
+        <p class="lede">Proof is evidence: publications, awards, and concrete outcomes. This section is intentionally visual and compact.</p>
+
+        <div class="proof-grid">
+          <div class="panel timeline">
+            <div class="mini-note">Vertical timeline</div>
+            <div class="timeline-item" style="margin-top: 14px;">
+              <div class="year">2025</div>
+              <div class="timeline-copy">
+                <h3>ICSE</h3>
+                <p>Best Paper Award in the student category for injury-risk prediction research.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="year">₹10,000</div>
+              <div class="timeline-copy">
+                <h3>Recognition</h3>
+                <p>Cash prize tied to the Best Paper win.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="year">2026</div>
+              <div class="timeline-copy">
+                <h3>IEEE Access</h3>
+                <p>Accepted paper on energy-, latency-, memory-, and carbon-efficient deep learning optimization.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="year">Research</div>
+              <div class="timeline-copy">
+                <h3>Conference work</h3>
+                <p>Computer vision, responsible AI, and applied engineering presented as concrete systems work.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-grid">
+            <article class="evidence-card panel">
+              <div class="k">Publication cover</div>
+              <div class="v">GreenAI</div>
+              <p>IEEE Access · Accepted</p>
+            </article>
+            <article class="evidence-card panel">
+              <div class="k">Award card</div>
+              <div class="v">Best Paper</div>
+              <p>ICSE 2025 · Student category</p>
+            </article>
+            <article class="evidence-card panel">
+              <div class="k">Metric</div>
+              <div class="v">17% gain</div>
+              <p>Localisation improvement from EKF + LSTM work on embedded systems.</p>
+            </article>
+            <article class="evidence-card panel">
+              <div class="k">Delivery</div>
+              <div class="v">10-15 seconds</div>
+              <p>Offline speech translation latency across six languages.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage" id="connect">
+      <div class="shell">
+        <span class="eyebrow">04 Connect</span>
+        <h2 class="title" style="max-width: 10ch;">Let's build.</h2>
+        <p class="lede">If you want someone who can bridge research, backend engineering, and systems work, this is the place to reach out.</p>
+
+        <div class="connect-layout">
+          <div class="connect-links">
+            <a class="connect-link" href="mailto:adhithiciyer2005@gmail.com">
+              <div class="meta"><span>Email</span><span>adhithiciyer2005@gmail.com</span></div>
+              <span class="pill"><strong>01</strong></span>
+            </a>
+            <a class="connect-link" href="https://github.com/Adhithi02" target="_blank" rel="noopener">
+              <div class="meta"><span>GitHub</span><span>github.com/Adhithi02</span></div>
+              <span class="pill"><strong>02</strong></span>
+            </a>
+            <a class="connect-link" href="https://www.linkedin.com/in/adhithi-iyer-121262332" target="_blank" rel="noopener">
+              <div class="meta"><span>LinkedIn</span><span>/in/adhithi-iyer</span></div>
+              <span class="pill"><strong>03</strong></span>
+            </a>
+            <a class="connect-link" href="https://leetcode.com/u/Adhithi_iy/" target="_blank" rel="noopener">
+              <div class="meta"><span>Resume / profile</span><span>leetcode.com/Adhithi_iy</span></div>
+              <span class="pill"><strong>04</strong></span>
+            </a>
+          </div>
+
+          <div class="panel closing">
+            <div>
+              <h3>Building intelligent systems<br><em>from research to production.</em></h3>
+              <p>That is the story, the brand, and the proof structure of the portfolio.</p>
+            </div>
+            <div class="terminal" aria-label="Terminal signature">
+              <div class="terminal-line"><strong>&gt;</strong><span>whoami</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>AI/ML Engineer</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Backend Engineer</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Researcher</span></div>
+              <div class="terminal-line"><strong>&gt;</strong><span>Systems Builder</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <div class="footer-row">
+        <span>Adhithi C Iyer</span>
+        <span>RV College of Engineering · Bengaluru</span>
+        <span>Built around systems thinking</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mindData = {
+      ai: {
+        title: 'AI',
+        text: 'I use AI as the logic layer of a system, not a decorative feature. The work matters when the model is measurable, deployable, and useful under constraints.'
+      },
+      backend: {
+        title: 'Backend',
+        text: 'Backend work is where the product becomes reliable: APIs, orchestration, streaming, state, and service boundaries that hold up in production.'
+      },
+      systems: {
+        title: 'Systems',
+        text: 'Systems work is about concurrency, Linux, scheduling, and making software predictable when resources are limited or timing matters.'
+      },
+      research: {
+        title: 'Research',
+        text: 'Research gives the portfolio its depth: IEEE Access, ICSE, injury-risk prediction, and sustainable model optimization all point to the same discipline.'
+      },
+      products: {
+        title: 'Products',
+        text: 'Products are where the work becomes visible. I care about practical systems that can be understood, demonstrated, and used.'
+      },
+      infra: {
+        title: 'Infrastructure',
+        text: 'Infrastructure is the hidden machine: deployment paths, metrics, tooling, and delivery choices that make the rest trustworthy.'
+      }
+    };
+
+    const nodeButtons = document.querySelectorAll('[data-node]');
+    const nodeDetail = document.getElementById('nodeDetail');
+
+    nodeButtons.forEach((button) => {
+      button.addEventListener('mouseenter', () => {
+        nodeButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        const data = mindData[button.dataset.node];
+        nodeDetail.innerHTML = `<strong>${data.title}</strong>${data.text}`;
+      });
+    });
+
+    const projectData = {
+      greenai: {
+        label: 'GreenAI',
+        summary: 'Dataset profiling → compression search → metric tracking → carbon analysis → deployment-minded evaluation.',
+        tags: ['PyTorch', 'CodeCarbon', 'React'],
+        fills: [0.95, 0.75, 0.8, 0.72, 0.68]
+      },
+      cue: {
+        label: 'CueStream',
+        summary: 'Signal fusion → feature extraction → model inference → live backend delivery → evaluation.',
+        tags: ['FastAPI', 'MediaPipe', 'OpenCV', 'React'],
+        fills: [0.9, 0.7, 0.76, 0.66, 0.7]
+      },
+      translate: {
+        label: 'Translate.io',
+        summary: 'Audio input → ASR → translation → noise suppression → Fast TTS → offline response.',
+        tags: ['Whisper', 'IndicTrans2', 'TTS', 'CPU-only'],
+        fills: [0.92, 0.74, 0.72, 0.7, 0.62]
+      },
+      scheduler: {
+        label: 'Linux IPC and SMT-Aware Job Scheduler',
+        summary: 'Producer → message queue → worker processes → pthread pools → CPU affinity.',
+        tags: ['C', 'pthreads', 'System V IPC', 'Linux'],
+        fills: [0.88, 0.8, 0.78, 0.74, 0.72]
+      }
+    };
+
+    const projectButtons = document.querySelectorAll('[data-project]');
+    const projectLabel = document.getElementById('projectLabel');
+    const projectSummary = document.getElementById('projectSummary');
+    const projectTags = document.getElementById('projectTags');
+    const pipelineBars = document.querySelectorAll('.pipe-bar span');
+
+    function setProject(key) {
+      const data = projectData[key];
+      projectLabel.textContent = data.label;
+      projectSummary.innerHTML = `<h4>Pipeline</h4><p>${data.summary}</p>`;
+      projectTags.innerHTML = data.tags.map((tag) => `<span class="tag">${tag}</span>`).join('');
+      pipelineBars.forEach((bar, index) => {
+        bar.style.setProperty('--fill', data.fills[index] || 0.65);
+      });
+      projectButtons.forEach((button) => button.classList.toggle('active', button.dataset.project === key));
+    }
+
+    projectButtons.forEach((button) => {
+      button.addEventListener('click', () => setProject(button.dataset.project));
+    });
+
+    const flowSteps = document.querySelectorAll('.flow-step');
+    flowSteps.forEach((step) => {
+      step.addEventListener('click', () => {
+        const map = {
+          mind: 'mind',
+          engine: 'engine',
+          proof: 'proof',
+          connect: 'connect'
+        };
+        document.getElementById(map[step.dataset.step]).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
